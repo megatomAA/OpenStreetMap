@@ -68,12 +68,24 @@ public class StaticMap {
 	 */
 	private ArrayList<HashMap<String, String>> markerPrototypes = new ArrayList<HashMap<String, String>>();
 	
+	public static String MAP_TYPE_MAPNICK = "mapnik";
+	public static String MAP_TYPE_OSM = "osmarenderer";
+	public static String MAP_TYPE_CYCLE = "cycle";
+	
+	/**
+	 * Default map type
+	 */
 	public static String tileDefaultSrc = "mapnik";
 	
     protected int zoom = 16, width = 512, height = 512;
     protected double centerX, centerY, offsetX, offsetY;
     protected String maptype = tileDefaultSrc;
     protected BufferedImage image;
+    
+    /**
+     * Get the generated image after generation
+     * @return
+     */
     public BufferedImage getImage() {
 		return image;
 	}
@@ -83,14 +95,22 @@ public class StaticMap {
 	}
 	
     protected Coords coords;
-    private String output = "";
+    
+    /**
+     * Output path
+     */
+    private String fileOutputPath = "";
     
     private boolean useMapCache=true;
 
 	public boolean isUseMapCache() {
 		return useMapCache;
 	}
-
+	
+	/**
+	 * Specify to use or not cache
+	 * @param useMapCache
+	 */
 	public void setUseMapCache(boolean useMapCache) {
 		this.useMapCache = useMapCache;
 	}
@@ -111,32 +131,60 @@ public class StaticMap {
     private String mapCacheFile;
     private String mapCacheExtension = "png";
     
-    public String getOutput() {
-		return output;
+    /**
+     * Get output file path
+     * @return
+     */
+    public String getFileOutputPath() {
+		return fileOutputPath;
 	}
-
-	public void setOutput(String output) {
-		this.output = output;
+    
+    /**
+     * Path for writing image to output file
+     * @param fileOutputPath
+     */
+	public void setFileOutputPath(String fileOutputPath) {
+		this.fileOutputPath = fileOutputPath;
 	}
-
+	
+	/**
+	 * Get coordoinates corresponding to the address
+	 * @return
+	 */
 	public Coords getCoord() {
 		return coords;
 	}
 
+	/**
+	 * Set the coordinates
+	 * @param coords
+	 */
 	public void setCoord(Coords coords) {
 		this.coords = coords;
 	}
 
 	private ArrayList<Marker> markers = new ArrayList<Marker>();
     
+	/**
+	 * Get maximum width size
+	 * @return
+	 */
 	public int getMaxWidth() {
 		return maxWidth;
 	}
 
+	/**
+	 * Set maximum width size
+	 * @return
+	 */
 	public void setMaxWidth(int maxWidth) {
 		this.maxWidth = maxWidth;
 	}
 
+	/**
+	 * Get maximum width height
+	 * @return
+	 */
 	public int getMaxHeight() {
 		return maxHeight;
 	}
@@ -145,6 +193,10 @@ public class StaticMap {
 		return zoom;
 	}
 
+	/**
+	 * Set map zoom. From 1 (earth view) to 16 (street view)
+	 * @param zoom
+	 */
 	public void setZoom(int zoom) {
 		this.zoom = zoom;
 	}
@@ -208,11 +260,19 @@ public class StaticMap {
 	public String getMaptype() {
 		return maptype;
 	}
-
+	
+	/**
+	 * Set map type.
+	 * @param maptype
+	 */
 	public void setMaptype(String maptype) {
 		this.maptype = maptype;
 	}
 
+	/**
+	 * Set maximum height size
+	 * @return
+	 */
 	public void setMaxHeight(int maxHeight) {
 		this.maxHeight = maxHeight;
 	}
@@ -225,6 +285,10 @@ public class StaticMap {
 		this.tileSize = tileSize;
 	}
 	
+	/**
+	 * Add a marker to map
+	 * @param marker
+	 */
 	public void addMarker(Marker marker) {
 		markers.add(marker);
 	}
@@ -276,7 +340,7 @@ public class StaticMap {
 		map.setAddress(address);
 		map.setZoom(Integer.parseInt(zoom));
 		map.setMaptype(maptype);
-		map.setOutput(output);
+		map.setFileOutputPath(output);
 		map.setUseMapCache(Boolean.parseBoolean(cache));
 		
 		if (!coord.equals("")) {
@@ -393,7 +457,7 @@ public class StaticMap {
                 }
 			}
 		}
-		if(!output.equals("")) {
+		if(!fileOutputPath.equals("")) {
 			writeToDisk();
 		}
 		return image;
@@ -424,7 +488,7 @@ public class StaticMap {
 	 */
 	private void writeToDisk() {
         try {
-	        ImageIO.write(image, "png", new File(getOutput()));
+	        ImageIO.write(image, "png", new File(getFileOutputPath()));
         } catch (IOException e) {
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();

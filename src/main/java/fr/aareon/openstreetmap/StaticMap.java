@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -471,7 +472,7 @@ public class StaticMap {
 		if (coords != null) {
 			Marker marker = new Marker();
 			marker.setCoord(coords);
-			marker.setType("ol-marker-blue");
+			marker.setType(Marker.CONST_TYPE_PURPLEPUSHPIN);
 			marker.setLabel(address);
 			addMarker(marker);
 			createBaseMap();
@@ -509,6 +510,12 @@ public class StaticMap {
 		        offsetX = Math.floor((Math.floor(centerX) - centerX) * tileSize);
 		        offsetY = Math.floor((Math.floor(centerY) - centerY) * tileSize);
 			}
+		} else {
+		    // calc position from coords
+            centerX = lonToTile(getCoord().getLongitude(), zoom);
+            centerY = latToTile(getCoord().getLatitude(), zoom);
+            offsetX = Math.floor((Math.floor(centerX) - centerX) * tileSize);
+            offsetY = Math.floor((Math.floor(centerY) - centerY) * tileSize);
 		}
 	}
 	
@@ -598,7 +605,9 @@ public class StaticMap {
     	String[] offsetMarker = {"0", "-19"};
     	String[] offsetMarkerShadow = {"0", "0"};
     	String shadow = "false", extension = ".png";
+    	Boolean isResource = false;
     	while(it.hasNext()) {
+    	    isResource = false;
     		Marker marker = it.next();
     		String type = marker.getType();
     		
@@ -612,11 +621,33 @@ public class StaticMap {
     				if (!shadow.equals("false")) {
     					offsetMarkerShadow = markerPrototype.get("offsetShadow").split(",");
     				}
+    				isResource = true;
     			}
+    		}
+    		if (!isResource) {
+    		    // not an internal resource (not matched by regexp), try to load as URL
+    		    offsetMarker = getImageSize(type);
+    		    shadow = "false";
+    		    isResource = false;
     		}
     		
     		//check if resource image exists
-    		InputStream is = StaticMap.class.getResourceAsStream("resources/images/markers/"+type+extension);
+    		InputStream is;
+    		if (isResource) {
+    		    is = StaticMap.class.getResourceAsStream("resources/images/markers/"+type+extension);
+    		} else {
+    		    try {
+                    is = new URL(type).openStream();
+                } catch (MalformedURLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    continue;
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    continue;
+                }
+    		}
     		try {
 	            BufferedImage imgmarker = ImageIO.read(is);
 	            
@@ -728,5 +759,21 @@ public class StaticMap {
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
         }
+    }
+    
+    private String[] getImageSize(String path) {
+        URL url;
+        try {
+            url = new URL(path);
+            final BufferedImage bi = ImageIO.read(url);
+            return new String[]{"-"+bi.getWidth(), "-"+bi.getHeight()};
+        } catch (MalformedURLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
+        return null;
     }
 }

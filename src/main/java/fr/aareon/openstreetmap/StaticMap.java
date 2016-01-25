@@ -81,6 +81,15 @@ public class StaticMap {
     protected int zoom = 16, width = 512, height = 512;
     protected double centerX, centerY, offsetX, offsetY;
     protected String maptype = tileDefaultSrc;
+    protected String icon;
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
     protected BufferedImage image;
     
     /**
@@ -302,6 +311,7 @@ public class StaticMap {
 		String size="512x512";
 		String markers="";
 		String output="";
+        String icon="";
 		String coord="";
 		String cache="true";
 		
@@ -315,6 +325,9 @@ public class StaticMap {
 			if (args[i].equals("-maptype")) {
 				maptype = args[++i];
 			}
+            if (args[i].equals("-icon")) {
+                icon = args[++i];
+            }
 			if (args[i].equals("-size")) {
 				size = args[++i];
 			}
@@ -343,6 +356,7 @@ public class StaticMap {
 		map.setMaptype(maptype);
 		map.setFileOutputPath(output);
 		map.setUseMapCache(Boolean.parseBoolean(cache));
+		map.setIcon(icon);
 		
 		if (!coord.equals("")) {
 			String[] coords = coord.split(",");
@@ -472,8 +486,12 @@ public class StaticMap {
 		if (coords != null) {
 			Marker marker = new Marker();
 			marker.setCoord(coords);
-			marker.setType(Marker.CONST_TYPE_PURPLEPUSHPIN);
 			marker.setLabel(address);
+			if (getIcon() != null) {
+			    marker.setType(getIcon());
+			} else {
+	            marker.setType(Marker.CONST_TYPE_PURPLEPUSHPIN);
+			}
 			addMarker(marker);
 			createBaseMap();
 			placeMarkers();

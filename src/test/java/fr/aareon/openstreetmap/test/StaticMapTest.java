@@ -29,6 +29,7 @@ public class StaticMapTest extends TestCase {
         map.generate();
         
         assertTrue(f.exists());
+        assertTrue(f.delete());
     }
     
     public void test_createMapWithMarkerLocal() {
@@ -58,6 +59,7 @@ public class StaticMapTest extends TestCase {
         map.generate();
         
         assertTrue(f.exists());
+        assertTrue(f.delete());
     }
 
     public void test_createMapWithMarkerUrl() {
@@ -87,6 +89,38 @@ public class StaticMapTest extends TestCase {
         map.generate();
         
         assertTrue(f.exists());
-    }    
+        assertTrue(f.delete());
+    }   
+
+    public void test_createMapWithSpecificIcon() {
+        String mapFilePath = "src/test/java/mapWithSpecificIcon.png";
+        File f = new File(mapFilePath);
+        if (f.exists()) {
+            f.delete();
+        }
+        
+        StaticMap map = new StaticMap();
+        map.setWidth(800);
+        map.setHeight(600);
+        map.setZoom(16);
+        map.setCoord(new Coords(Float.parseFloat("48.7892521"), Float.parseFloat("2.2118679")));
+        map.setAddress("Aareon France Ancienne Adresse");
+        map.setIcon("http://lv3im5:7780/syloimages/puce_aareon.png");
+        map.setMaptype(StaticMap.MAP_TYPE_MAPNICK);
+        map.setUseMapCache(false);
+        map.setUseTileCache(true);
+        map.setFileOutputPath(mapFilePath);
+        
+        Marker marker = new Marker();
+        marker.setCoord(new Coords((float) 48.7897645, (float)2.2117242));
+        marker.setType("http://lv3im5:7780/syloimages/puce_aareon.png");
+        marker.setLabel("Aareon France Nouvelle Adresse");
+        map.addMarker(marker);
+        
+        map.generate();
+        
+        assertTrue(f.exists());
+        assertTrue(f.delete());
+    } 
     
 }

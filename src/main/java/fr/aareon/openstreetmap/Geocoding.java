@@ -93,9 +93,12 @@ public class Geocoding {
 		Geocoding geocoding = new Geocoding();
 		geocoding.setAddress(address);
 		geocoding.setFormat(format);
-		Coords coords = geocoding.request();
-		if (coords != null) {
-			System.out.println("Coordonnees trouvees : "+coords.getLatitude() + ":"+coords.getLongitude());
+		Coords[] coords = geocoding.request();
+		if (coords.length > 0) {
+			System.out.println("Coordonnees trouvees : ");
+			for (int i=0;i<coords.length;i++) {
+			    System.out.println("{"+coords[i].getLatitude()+":"+coords[i].getLongitude()+"}");
+			}
 		}
 	}
 	
@@ -103,7 +106,8 @@ public class Geocoding {
 	 * Request coordinates for an address
 	 * @return Found coordinates or null.
 	 */
-	public Coords request() {
+	public Coords[] request() {
+	    Coords[] coords;
 		String url = getUrl();
 		try {
 			url = url.replace("${adress}", URLEncoder.encode(getAddress(), "UTF-8"));
@@ -136,12 +140,21 @@ public class Geocoding {
 				
 				JSONParser parser = new JSONParser();
 				JSONArray json = (JSONArray) parser.parse(response.toString());
-				JSONObject jsonObj = (JSONObject) json.get(0);
 				
-				Coords coords = new Coords();
-				coords.setLatitude(Float.valueOf(jsonObj.get("lat").toString()));
-				coords.setLongitude(Float.valueOf(jsonObj.get("lon").toString()));
+				coords = new Coords[json.size()];
+				for (int i=0;i<json.size();i++) {
+				
+    				JSONObject jsonObj = (JSONObject) json.get(0);
+    				
+    				Coords coord = new Coords();
+    				coord.setLatitude(Float.valueOf(jsonObj.get("lat").toString()));
+    				coord.setLongitude(Float.valueOf(jsonObj.get("lon").toString()));
+                    coord.setAddressLabel(jsonObj.get("display_name").toString());
+    				
+    				coords[i] = coord;
+				}
 				return coords;
+				
 			} else {
 				return null;
 			}
@@ -157,4 +170,6 @@ public class Geocoding {
         }
 		return null;
 	}
+	
+	
 }

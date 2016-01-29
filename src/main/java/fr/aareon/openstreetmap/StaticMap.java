@@ -521,8 +521,10 @@ public class StaticMap {
 		if (getCoord() == null) {
 			Geocoding geocoding = new Geocoding();
 			geocoding.setAddress(address);
-			setCoord(geocoding.request());
+			
+			Coords[] coords = geocoding.request();
 			if (coords != null) {
+	            setCoord(coords[0]);
 		        centerX = lonToTile(getCoord().getLongitude(), zoom);
 		        centerY = latToTile(getCoord().getLatitude(), zoom);
 		        offsetX = Math.floor((Math.floor(centerX) - centerX) * tileSize);

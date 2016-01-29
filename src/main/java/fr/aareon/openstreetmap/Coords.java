@@ -1,5 +1,7 @@
 package fr.aareon.openstreetmap;
 
+import org.json.simple.JSONObject;
+
 /**
  * GPS coordinates : latitude and longitude.
  * @author tlassauniere
@@ -22,6 +24,8 @@ public class Coords {
 	}
 	private float longitude;
 	
+	private String addressLabel = "";
+	
 	public Coords(float latitude, float longitude) {
 		super();
 		setLatitude(latitude);
@@ -34,5 +38,19 @@ public class Coords {
 	public String toString() {
 		return getLatitude() + "-" + getLongitude();
 	}
+    public String getAddressLabel() {
+        return addressLabel;
+    }
+    public void setAddressLabel(String addressLabel) {
+        this.addressLabel = addressLabel;
+    }
+    
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("display_name", getAddressLabel());
+        json.put("lat", getLatitude());
+        json.put("lon", getLongitude());
+        return json;
+    }
 
 }

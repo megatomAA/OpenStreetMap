@@ -64,7 +64,6 @@ public class StaticMap {
 	private int tileSize = 256;
     
 	/* types of map */
-    public static String MAP_TYPE_OSM = "osmarenderer";
     public static String MAP_TYPE_CYCLE = "cycle"; 
     public static String MAP_TYPE_TRANSPORT = "transport";
     public static String MAP_TYPE_LANDSCAPE = "landscape";
@@ -83,7 +82,6 @@ public class StaticMap {
 	private static Map<String, String> initTilesUrls() {
 	    Map<String, String> map = new HashMap<String, String>();
 	    map.put(StaticMap.MAP_TYPE_TRANSPORT, "http://{S}.tile.thunderforest.com/transport/{Z}/{X}/{Y}.png?apikey={apikey}");
-	    map.put(StaticMap.MAP_TYPE_OSM, "http://otile1.mqcdn.com/tiles/1.0.0/osm/{Z}/{X}/{Y}.png");
 	    map.put(StaticMap.MAP_TYPE_CYCLE, "http://{S}.tile.thunderforest.com/cycle/{Z}/{X}/{Y}.png?apikey={apikey}");
 	    map.put(StaticMap.MAP_TYPE_LANDSCAPE, "http://{S}.tile.thunderforest.com/landscape/{Z}/{X}/{Y}.png?apikey={apikey}");
 	    map.put(StaticMap.MAP_TYPE_OUTDOORS, "http://{S}.tile.thunderforest.com/outdoors/{Z}/{X}/{Y}.png?apikey={apikey}");

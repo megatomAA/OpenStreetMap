@@ -20,6 +20,7 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -381,6 +382,7 @@ public class StaticMap {
 		String coord="";
 		String cache="true";
 		String apiKey="";
+		boolean cleanCache = false;
 		
 		for (int i=0;i<args.length;i++) {
 			if (args[i].equals("-q")) {
@@ -412,6 +414,9 @@ public class StaticMap {
 			}
             if (args[i].equals("-apikey")) {
                 apiKey = args[++i];
+            }
+            if (args[i].equals("-cleanCache")) {
+                cleanCache = true;
             }
 		}
 		
@@ -450,6 +455,9 @@ public class StaticMap {
 				map.addMarker(marker);
 			}
 		}
+		if (cleanCache) {
+		    map.cleanCache();
+		}
 		map.generate();
 	}
 	
@@ -460,16 +468,38 @@ public class StaticMap {
 	 * Prints usage in console
 	 */
 	public static void printUsage() {
-		System.out.println("java -cp OpenStreeMap-{version}-jar-dependencies.jar fr.aareon.openstreetmap.StaticMap [-q address | -coord lat,lon] [-o outputpath] [-cache true/false] [-size 512x512] [-zoom 0-18] [-markers] [-maptype [mapnik,osmarenderer,cycle]]");
+		System.out.println("java -cp OpenStreeMap-{version}-jar-dependencies.jar fr.aareon.openstreetmap.StaticMap [-q address | -coord lat,lon] [-o outputpath] [-cache true/false] [-size 512x512] [-zoom 0-18] [-markers] [-maptype [mapnik,osmarenderer,cycle]] [-cleanCache]");
 		System.out.println("    -q : address");
 		System.out.println("    -coord : coordinates latitude,longitude");
-		System.out.println("    -o : write map to path");
+		System.out.println("    -o : write map to path outputpath");
 		System.out.println("    -cache : Use file cache. True or false");
 		System.out.println("    -size : Map size. Ex : 512x1024");
 		System.out.println("    -zoom : Map zoom. From 0 to 18");
 		System.out.println("    -markers : Add markers. lat,lon,type,label|lat,lon,type,label|lat,lon,type,label");
-		System.out.println("    -maptype : Map type. mapnik (default), cycle, osmarenderer");
-        System.out.println("    -apikey : Clé API http://www.thunderforest.com/docs/apikeys/");
+		System.out.println("    -maptype : Map type. cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood");
+        System.out.println("    -apikey : Clé API - Get from http://www.thunderforest.com/docs/apikeys/");
+        System.out.println("    -cleanCache : True/false");
+	}
+	
+	/*
+	 * Clean cache directories
+	 */
+	public void cleanCache() {
+	    File dir;
+	    dir = new File(System.getProperty("java.io.tmpdir") + "/" + tileCacheBaseDir);
+	    try {
+            FileUtils.deleteDirectory(dir);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        dir = new File(System.getProperty("java.io.tmpdir") + "/" + mapCacheBaseDir);
+        try {
+            FileUtils.deleteDirectory(dir);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 
 	/**

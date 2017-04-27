@@ -59,7 +59,7 @@
     <repository>
         <id>aareon-releases</id>
         <name>aareon-releases</name>
-        <url>http://dockarti01.aareonit.fr:8081/artifactory/libs-release-local</url>
+        <url>https://arti.it.aareonit.fr/artifactory/libs-release-local</url>
     </repository>
   </distributionManagement>
 </project>

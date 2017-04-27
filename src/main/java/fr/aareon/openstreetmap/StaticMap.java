@@ -468,7 +468,7 @@ public class StaticMap {
 	 * Prints usage in console
 	 */
 	public static void printUsage() {
-		System.out.println("java -cp OpenStreeMap-{version}-jar-dependencies.jar fr.aareon.openstreetmap.StaticMap [-q address | -coord lat,lon] [-o outputpath] [-cache true/false] [-size 512x512] [-zoom 0-18] [-markers] [-maptype [mapnik,osmarenderer,cycle]] [-cleanCache]");
+		System.out.println("java -cp OpenStreeMap-{version}-jar-dependencies.jar fr.aareon.openstreetmap.StaticMap [-q address | -coord lat,lon] [-o outputpath] [-cache true/false] [-size 512x512] [-zoom 0-18] [-markers] [-maptype [cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood]] [-cleanCache]");
 		System.out.println("    -q : address");
 		System.out.println("    -coord : coordinates latitude,longitude");
 		System.out.println("    -o : write map to path outputpath");

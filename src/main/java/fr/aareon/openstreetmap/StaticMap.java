@@ -15,6 +15,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -60,23 +62,87 @@ public class StaticMap {
 	 * Size for each tile
 	 */
 	private int tileSize = 256;
+    
+	/* types of map */
+    public static String MAP_TYPE_OSM = "osmarenderer";
+    public static String MAP_TYPE_CYCLE = "cycle"; 
+    public static String MAP_TYPE_TRANSPORT = "transport";
+    public static String MAP_TYPE_LANDSCAPE = "landscape";
+    public static String MAP_TYPE_OUTDOORS = "outdoors";
+    public static String MAP_TYPE_TRANSPORTDARK = "transport-dark";
+    public static String MAP_TYPE_SPINALMAP = "spinal-map";
+    public static String MAP_TYPE_PIONEER = "pioneer";
+    public static String MAP_TYPE_MOBILEATLAS = "mobile-atlas";
+    public static String MAP_TYPE_NEIGHBOURHOOD = "neighbourhood";
+    
 	/**
 	 * Urls for getting tiles
 	 */
-	private HashMap<String, String> tileSrcUrl = new HashMap<String, String>();
+	private Map<String, String> tileSrcUrl = initTilesUrls();
+	
+	private static Map<String, String> initTilesUrls() {
+	    Map<String, String> map = new HashMap<String, String>();
+	    map.put(StaticMap.MAP_TYPE_TRANSPORT, "http://{S}.tile.thunderforest.com/transport/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_OSM, "http://otile1.mqcdn.com/tiles/1.0.0/osm/{Z}/{X}/{Y}.png");
+	    map.put(StaticMap.MAP_TYPE_CYCLE, "http://{S}.tile.thunderforest.com/cycle/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_LANDSCAPE, "http://{S}.tile.thunderforest.com/landscape/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_OUTDOORS, "http://{S}.tile.thunderforest.com/outdoors/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_TRANSPORTDARK, "http://{S}.tile.thunderforest.com/transport-dark/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_SPINALMAP, "http://{S}.tile.thunderforest.com/spinal-map/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_PIONEER, "http://{S}.tile.thunderforest.com/pioneer/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_MOBILEATLAS, "http://{S}.tile.thunderforest.com/mobile-atlas/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_NEIGHBOURHOOD, "http://{S}.tile.thunderforest.com/neighbourhood/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    return map;
+	}
+	
 	/**
 	 * Markers prototypes
 	 */
-	private ArrayList<HashMap<String, String>> markerPrototypes = new ArrayList<HashMap<String, String>>();
+	private ArrayList<Map<String, String>> markerPrototypes = initMarkers();
 	
-	public static String MAP_TYPE_MAPNICK = "mapnik";
-	public static String MAP_TYPE_OSM = "osmarenderer";
-	public static String MAP_TYPE_CYCLE = "cycle";
+	private static ArrayList<Map<String, String>> initMarkers() {
+	    ArrayList<Map<String, String>> markers = new ArrayList<Map<String, String>>();
+        Map<String, String> prototype;
+
+        prototype = new HashMap<String, String>();
+        prototype.put("regex", "^lightblue([0-9]+)$");
+        prototype.put("extension", ".png");
+        prototype.put("shadow", "false");
+        prototype.put("offsetImage", "0,-19");
+        prototype.put("offsetShadow", "false");
+        markers.add(prototype);
+
+        prototype = new HashMap<String, String>();
+        prototype.put("regex", "^ol-marker(|-blue|-gold|-green)+$");
+        prototype.put("extension", ".png");
+        prototype.put("shadow", "marker_shadow.png");
+        prototype.put("offsetImage", "-10,-25");
+        prototype.put("offsetShadow", "-1,-13");
+        markers.add(prototype);
+
+        prototype = new HashMap<String, String>();
+        prototype.put("regex", "^(pink|purple|red|ltblu|ylw)-pushpin$");
+        prototype.put("extension", ".png");
+        prototype.put("shadow", "marker_shadow.png");
+        prototype.put("offsetImage", "-10,-32");
+        prototype.put("offsetShadow", "-1,-13");
+        markers.add(prototype);
+        
+        prototype = new HashMap<String, String>();
+        prototype.put("regex", "^bullseye$");
+        prototype.put("extension", ".png");
+        prototype.put("shadow", "false");
+        prototype.put("offsetImage", "-20,-20");
+        prototype.put("offsetShadow", "false");
+        markers.add(prototype);
+        
+	    return markers;
+	}
 	
 	/**
 	 * Default map type
 	 */
-	public static String tileDefaultSrc = "mapnik";
+	public static String tileDefaultSrc = StaticMap.MAP_TYPE_CYCLE;
 	
     protected int zoom = 16, width = 512, height = 512;
     protected double centerX, centerY, offsetX, offsetY;
@@ -140,6 +206,8 @@ public class StaticMap {
     private String mapCacheID = "";
     private String mapCacheFile;
     private String mapCacheExtension = "png";
+    
+    private String apiKey="";
     
     /**
      * Get output file path
@@ -314,6 +382,7 @@ public class StaticMap {
         String icon="";
 		String coord="";
 		String cache="true";
+		String apiKey="";
 		
 		for (int i=0;i<args.length;i++) {
 			if (args[i].equals("-q")) {
@@ -343,6 +412,9 @@ public class StaticMap {
 			if (args[i].equals("-cache")) {
 				cache = args[++i];
 			}
+            if (args[i].equals("-apikey")) {
+                apiKey = args[++i];
+            }
 		}
 		
 		if (address.equals("") && coord.equals("")) {
@@ -357,6 +429,7 @@ public class StaticMap {
 		map.setFileOutputPath(output);
 		map.setUseMapCache(Boolean.parseBoolean(cache));
 		map.setIcon(icon);
+		map.setApiKey(apiKey);
 		
 		if (!coord.equals("")) {
 			String[] coords = coord.split(",");
@@ -383,8 +456,6 @@ public class StaticMap {
 	}
 	
 	public StaticMap() {
-		initTileUrls();
-		initMarkerPrototypes();
 	}
 	
 	/**
@@ -400,54 +471,7 @@ public class StaticMap {
 		System.out.println("    -zoom : Map zoom. From 0 to 18");
 		System.out.println("    -markers : Add markers. lat,lon,type,label|lat,lon,type,label|lat,lon,type,label");
 		System.out.println("    -maptype : Map type. mapnik (default), cycle, osmarenderer");
-	}
-	
-	/**
-	 * Initializes tile's urls
-	 */
-	private void initTileUrls() {
-		tileSrcUrl.put("mapnik", "http://tile.openstreetmap.org/{Z}/{X}/{Y}.png");
-		tileSrcUrl.put("osmarenderer", "http://otile1.mqcdn.com/tiles/1.0.0/osm/{Z}/{X}/{Y}.png");
-		tileSrcUrl.put("cycle", "http://a.tile.opencyclemap.org/cycle/{Z}/{X}/{Y}.png");
-	}
-	
-	/**
-	 * Initializes marker prototypes
-	 */
-	private void initMarkerPrototypes() {
-		HashMap<String, String> prototype;
-		
-		prototype = new HashMap<String, String>();
-		prototype.put("regex", "^lightblue([0-9]+)$");
-		prototype.put("extension", ".png");
-		prototype.put("shadow", "false");
-		prototype.put("offsetImage", "0,-19");
-		prototype.put("offsetShadow", "false");
-		markerPrototypes.add(prototype);
-
-		prototype = new HashMap<String, String>();
-		prototype.put("regex", "^ol-marker(|-blue|-gold|-green)+$");
-		prototype.put("extension", ".png");
-		prototype.put("shadow", "marker_shadow.png");
-		prototype.put("offsetImage", "-10,-25");
-		prototype.put("offsetShadow", "-1,-13");
-		markerPrototypes.add(prototype);
-
-		prototype = new HashMap<String, String>();
-		prototype.put("regex", "^(pink|purple|red|ltblu|ylw)-pushpin$");
-		prototype.put("extension", ".png");
-		prototype.put("shadow", "marker_shadow.png");
-		prototype.put("offsetImage", "-10,-32");
-		prototype.put("offsetShadow", "-1,-13");
-		markerPrototypes.add(prototype);
-		
-		prototype = new HashMap<String, String>();
-		prototype.put("regex", "^bullseye$");
-		prototype.put("extension", ".png");
-		prototype.put("shadow", "false");
-		prototype.put("offsetImage", "-20,-20");
-		prototype.put("offsetShadow", "false");
-		markerPrototypes.add(prototype);
+        System.out.println("    -apikey : Clé API http://www.thunderforest.com/docs/apikeys/");
 	}
 
 	/**
@@ -584,6 +608,8 @@ public class StaticMap {
 	 */
     private void createBaseMap()
     {
+        String[] servers = new String[]{"a","b","c"};
+        Random random = new Random();
     	image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     	Graphics gdr = image.getGraphics();
         double startX = Math.floor(centerX - (width / tileSize) / 2);
@@ -601,9 +627,12 @@ public class StaticMap {
             for (double y = startY; y <= endY; y++) {
             	String url = tileSrcUrl.get(maptype);
             	
+            	// get a random tiles server (a, b, c)
+            	url = url.replace("{S}", servers[random.nextInt(3)]);
                 url = url.replace("{Z}", Integer.toString(zoom));
                 url = url.replace("{X}", String.format("%s",(int)x));
                 url = url.replace("{Y}", String.format("%s",(int)y));
+                url = url.replace("{apikey}", getApiKey());
                 
                 tileData = fetchTile(url);
                 // TODO check errors
@@ -631,9 +660,9 @@ public class StaticMap {
     		Marker marker = it.next();
     		String type = marker.getType();
     		
-    		Iterator<HashMap<String, String>> imp = markerPrototypes.iterator();
+    		Iterator<Map<String, String>> imp = markerPrototypes.iterator();
     		while(imp.hasNext()) {
-    			HashMap<String, String> markerPrototype = imp.next();    			
+    			Map<String, String> markerPrototype = imp.next();    			
     			if (type.matches(markerPrototype.get("regex"))) {
     				offsetMarker = markerPrototype.get("offsetImage").split(",");
     				shadow = markerPrototype.get("shadow");
@@ -756,7 +785,12 @@ public class StaticMap {
 
 
     private String tileUrlToFilename(String url) {
-        return System.getProperty("java.io.tmpdir") + "/" + tileCacheBaseDir + "/" + url.replace("http://", "");
+        url = url.replace("http://", "");
+        int s;
+        if ((s = url.indexOf("?")) > -1) {
+            url = url.substring(0, s);
+        }
+        return System.getProperty("java.io.tmpdir") + "/" + tileCacheBaseDir + "/" + url;
     }
 
     private File checkTileCache(String url) {
@@ -795,5 +829,13 @@ public class StaticMap {
             e.printStackTrace();
         } 
         return null;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 }

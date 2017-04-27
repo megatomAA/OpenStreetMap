@@ -22,10 +22,11 @@ public class StaticMapTest extends TestCase {
         map.setZoom(16);
         map.setCoord(new Coords(Float.parseFloat("48.7897645"), Float.parseFloat("2.2117242")));
         map.setAddress("9 rue Jeanne Braconnier 92360 MEUDON");
-        map.setMaptype(StaticMap.MAP_TYPE_MAPNICK);
+        map.setMaptype(StaticMap.MAP_TYPE_CYCLE);
         map.setUseMapCache(false);
         map.setUseTileCache(true);
         map.setFileOutputPath(mapFilePath);
+        map.setApiKey("9bbf1f2f61c44d468ab96ff5e46b1bbb");
         map.generate();
         
         assertTrue(f.exists());
@@ -45,10 +46,11 @@ public class StaticMapTest extends TestCase {
         map.setZoom(16);
         map.setCoord(new Coords(Float.parseFloat("48.7897645"), Float.parseFloat("2.2117242")));
         map.setAddress("9 rue Jeanne Braconnier 92360 MEUDON");
-        map.setMaptype(StaticMap.MAP_TYPE_MAPNICK);
+        map.setMaptype(StaticMap.MAP_TYPE_CYCLE);
         map.setUseMapCache(false);
         map.setUseTileCache(true);
         map.setFileOutputPath(mapFilePath);
+        map.setApiKey("9bbf1f2f61c44d468ab96ff5e46b1bbb");
         
         Marker marker = new Marker();
         marker.setCoord(new Coords((float) 48.7896, (float)2.212));
@@ -75,10 +77,11 @@ public class StaticMapTest extends TestCase {
         map.setZoom(16);
         map.setCoord(new Coords(Float.parseFloat("48.7892521"), Float.parseFloat("2.2118679")));
         map.setAddress("Aareon France Ancienne Adresse");
-        map.setMaptype(StaticMap.MAP_TYPE_MAPNICK);
+        map.setMaptype(StaticMap.MAP_TYPE_CYCLE);
         map.setUseMapCache(false);
         map.setUseTileCache(true);
         map.setFileOutputPath(mapFilePath);
+        map.setApiKey("9bbf1f2f61c44d468ab96ff5e46b1bbb");
         
         Marker marker = new Marker();
         marker.setCoord(new Coords((float) 48.7897645, (float)2.2117242));
@@ -106,10 +109,11 @@ public class StaticMapTest extends TestCase {
         map.setCoord(new Coords(Float.parseFloat("48.7892521"), Float.parseFloat("2.2118679")));
         map.setAddress("Aareon France Ancienne Adresse");
         map.setIcon("http://lv3im5:7780/syloimages/puce_aareon.png");
-        map.setMaptype(StaticMap.MAP_TYPE_MAPNICK);
+        map.setMaptype(StaticMap.MAP_TYPE_CYCLE);
         map.setUseMapCache(false);
         map.setUseTileCache(true);
         map.setFileOutputPath(mapFilePath);
+        map.setApiKey("9bbf1f2f61c44d468ab96ff5e46b1bbb");
         
         Marker marker = new Marker();
         marker.setCoord(new Coords((float) 48.7897645, (float)2.2117242));

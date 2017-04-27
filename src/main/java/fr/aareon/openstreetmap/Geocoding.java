@@ -140,6 +140,9 @@ public class Geocoding {
 				
 				JSONParser parser = new JSONParser();
 				JSONArray json = (JSONArray) parser.parse(response.toString());
+				if (json.size() == 0) {
+				    return null;
+				}
 				
 				coords = new Coords[json.size()];
 				for (int i=0;i<json.size();i++) {

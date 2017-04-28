@@ -1,7 +1,7 @@
 # OpenStreetMap
 Geocoding + Generate Static Map (PNG) from OpenStreetMap with JAVA
 
-For Map Generation, you have to register to ThunderForst and obtain an API Key. See : https://www.thunderforest.com/docs/apikeys/
+For Map Generation, you have to register to ThunderForst and obtain an API Key. See : [https://www.thunderforest.com/docs/apikeys/](https://www.thunderforest.com/docs/apikeys/)
 
 ## Maven Build
 mvn package
@@ -14,6 +14,10 @@ mvn package
 Geocoding geocoding = new Geocoding();
 geocoding.setAddress("9 rue Jeanne Braconnier 92360 MEUDON FRANCE");
 Coords[] coords = geocoding.request();
+for (Coords coord : coords) {
+    float lon = coord.getLongitude();
+    float lat = coord.getLatitude();
+}
 ```
 
 ### StaticMap 
@@ -30,7 +34,7 @@ map.setUseMapCache(false);
 map.setUseTileCache(true);
 map.setFileOutputPath("/tmp/map.png");
 map.setApiKey("{ThunderForestApiKey}");
-map.generate();
+BufferedImage img = map.generate();
 ```
 
 ## Command Line Arguments
@@ -44,12 +48,13 @@ map.generate();
 - **-coord** - string representation of GPS coordinates (latitude,longitude) for the center of the map. Example : 2.2117242,48.7897645
 - **-o** - path to write the generated image. 
 - **-cache** - if true, use cache for maps and tiles. Default is false
-- **-size** - string representation for image size ({width_in_pixels}x{height_in_pixels}). Default is 512x512
+- **-size** - string representation for image size ({widthInPixels}x{heightInPixels}). Default is 512x512
 - **-zoom** - numeric value for zoom. (0 to 18). Default is 16.
-- **-maptype** - the name of the map style from list : cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood
+- **-maptype** - the name of the map style from list : cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood. See [Thunderforest Maps Examples](https://www.thunderforest.com/maps/)
 - **-cleanCache** - if true, clean cache folder before generating map. Default is false
 - **-markers** - string representation for a list of markers. Format is : lat,lon,type,label|lat,lon,type,label|lat,lon,type,label.
   - **lat** - latitude, float
   - **lon** - longitude, float
   - **type** - string representation for marker icon, from list : bullseye, lightblue1, lightblue2, lightblue3, lightblue4, lightblue5, ltblu-pushpin, pink-pushpin, purple-pushpin, red-pushpin, ylw-pushpin, ol-marker-blue, ol-marker-gold, ol-marker-green, ol-marker
-  - **label** - label for the marker (label, adress, description...)
+  - **label** - label for the marker (label, address, description...)
+ 

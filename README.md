@@ -52,7 +52,7 @@ BufferedImage img = map.generate();
 - **-zoom** - numeric value for zoom. (0 to 18). Default is 16.
 - **-maptype** - the name of the map style from list : cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood. See [Thunderforest Maps Examples](https://www.thunderforest.com/maps/)
 - **-cleanCache** - if true, clean cache folder before generating map. Default is false
-- **-markers** - string representation for a list of markers. Format is : lat,lon,type,label|lat,lon,type,label|lat,lon,type,label.
+- **-markers** - string representation for a list of markers, pipe separated. Format is : lat,lon,type,label|lat,lon,type,label|lat,lon,type,label.
   - **lat** - latitude, float
   - **lon** - longitude, float
   - **type** - string representation for marker icon, from list : bullseye, lightblue1, lightblue2, lightblue3, lightblue4, lightblue5, ltblu-pushpin, pink-pushpin, purple-pushpin, red-pushpin, ylw-pushpin, ol-marker-blue, ol-marker-gold, ol-marker-green, ol-marker

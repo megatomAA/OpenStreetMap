@@ -1,5 +1,7 @@
 # OpenStreetMap
-Geocoding + Generate Map from OpenStreetMap with JAVA
+Geocoding + Generate Static Map (PNG) from OpenStreetMap with JAVA
+
+For Map Generation, you have to register to ThunderForst and obtain an API Key. See : https://www.thunderforest.com/docs/apikeys/
 
 ## Maven Build
 mvn package
@@ -34,7 +36,20 @@ map.generate();
 ## Command Line Arguments
 
 ### StaticMap
-<code>java -cp OpenStreeMap-{version}-jar-dependencies.jar fr.aareon.openstreetmap.StaticMap [-q address | -coord lat,lon] [-o outputpath] [-cache true/false] [-size 512x512] [-zoom 0-18] [-markers] [-maptype [cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood]] [-cleanCache]
+<code>java -cp OpenStreeMap-{version}-jar-dependencies.jar fr.aareon.openstreetmap.StaticMap (-q address | -coord lat,lon) -o outputpath [-cache true/false] [-size 512x512] [-zoom 0-18] [-markers] [-maptype [cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood]] [-cleanCache]
 </code>
 
-
+### Available arguments
+* ''-q'' - string representation of an address which is the center of the map. Geocoding will be used to get coordinates for this address. Example : 9 rue Jeanne Braconnier 92360 MEUDON FRANCE
+* ''-coord'' - string representation of GPS coordinates (latitude,longitude) for the center of the map. Example : 2.2117242,48.7897645
+* ''-o'' - path to write the generated image. 
+* ''-cache'' - if true, use cache for maps and tiles. Default is false
+* ''-size'' - string representation for image size ({width_in_pixels}x{height_in_pixels}). Default is 512x512
+* ''-zoom'' - numeric value for zoom. (0 to 18). Default is 16.
+* ''-maptype'' - the name of the map style from list : cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood
+* ''-cleanCache'' - if true, clean cache folder before generating map. Default is false
+* ''-markers'' - string representation for a list of markers. Format is : lat,lon,type,label|lat,lon,type,label|lat,lon,type,label.
+** ''lat'' - latitude, float
+** ''lon'' - longitude, float
+** ''type'' - string representation for marker icon, from list : bullseye, lightblue1, lightblue2, lightblue3, lightblue4, lightblue5, ltblu-pushpin, pink-pushpin, purple-pushpin, red-pushpin, ylw-pushpin, ol-marker-blue, ol-marker-gold, ol-marker-green, ol-marker
+** ''label'' - label for the marker (label, adress, description...)

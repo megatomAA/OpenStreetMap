@@ -424,6 +424,12 @@ public class StaticMap {
 			printUsage();
 			return;
 		}
+        
+        if (output.equals("")) {
+            System.out.println("Outpupath is required.");
+            printUsage();
+            return;
+        }
 		
 		StaticMap map = new StaticMap();
 		map.setAddress(address);
@@ -468,7 +474,7 @@ public class StaticMap {
 	 * Prints usage in console
 	 */
 	public static void printUsage() {
-		System.out.println("java -cp OpenStreeMap-{version}-jar-dependencies.jar fr.aareon.openstreetmap.StaticMap [-q address | -coord lat,lon] [-o outputpath] [-cache true/false] [-size 512x512] [-zoom 0-18] [-markers] [-maptype [cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood]] [-cleanCache]");
+		System.out.println("java -cp OpenStreeMap-{version}-jar-dependencies.jar fr.aareon.openstreetmap.StaticMap (-q address | -coord lat,lon) -o outputpath [-cache true/false] [-size 512x512] [-zoom 0-18] [-markers] [-maptype [cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood]] [-cleanCache]");
 		System.out.println("    -q : address");
 		System.out.println("    -coord : coordinates latitude,longitude");
 		System.out.println("    -o : write map to path outputpath");
@@ -477,7 +483,7 @@ public class StaticMap {
 		System.out.println("    -zoom : Map zoom. From 0 to 18");
 		System.out.println("    -markers : Add markers. lat,lon,type,label|lat,lon,type,label|lat,lon,type,label");
 		System.out.println("    -maptype : Map type. cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood");
-        System.out.println("    -apikey : Clé API - Get from http://www.thunderforest.com/docs/apikeys/");
+        System.out.println("    -apikey : API KEY - Get from https://www.thunderforest.com/docs/apikeys/");
         System.out.println("    -cleanCache : True/false");
 	}
 	

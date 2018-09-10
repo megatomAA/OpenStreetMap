@@ -56,7 +56,7 @@ public class Geocoding {
 
 	private String format = "json";
 	
-	private String url = "http://nominatim.openstreetmap.org/search?q=${adress}&format=${format}";
+	private String url = "https://nominatim.openstreetmap.org/search?q=${adress}&format=${format}";
 	
 	public String getUrl() {
 		return url;
@@ -93,20 +93,25 @@ public class Geocoding {
 		Geocoding geocoding = new Geocoding();
 		geocoding.setAddress(address);
 		geocoding.setFormat(format);
-		Coords[] coords = geocoding.request();
-		if (coords.length > 0) {
-			System.out.println("Coordonnees trouvees : ");
-			for (int i=0;i<coords.length;i++) {
-			    System.out.println("{"+coords[i].getLatitude()+":"+coords[i].getLongitude()+"}");
-			}
-		}
+		Coords[] coords;
+        try {
+            coords = geocoding.request();
+            System.out.println("Coordonnees trouvees : ");
+            for (int i=0;i<coords.length;i++) {
+                System.out.println("{"+coords[i].getLatitude()+":"+coords[i].getLongitude()+"}");
+            }
+        } catch (AddressNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 	
 	/**
 	 * Request coordinates for an address
 	 * @return Found coordinates or null.
+	 * @throws AddressNotFoundException 
 	 */
-	public Coords[] request() {
+	public Coords[] request() throws AddressNotFoundException {
 	    Coords[] coords;
 		String url = getUrl();
 		try {
@@ -141,7 +146,7 @@ public class Geocoding {
 				JSONParser parser = new JSONParser();
 				JSONArray json = (JSONArray) parser.parse(response.toString());
 				if (json.size() == 0) {
-				    return null;
+				    throw new AddressNotFoundException("Address " + getAddress() + " not found during Geocoding");
 				}
 				
 				coords = new Coords[json.size()];

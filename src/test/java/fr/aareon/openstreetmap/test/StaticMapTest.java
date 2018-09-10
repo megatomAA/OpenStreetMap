@@ -2,6 +2,7 @@ package fr.aareon.openstreetmap.test;
 
 import java.io.File;
 
+import fr.aareon.openstreetmap.AddressNotFoundException;
 import fr.aareon.openstreetmap.Coords;
 import fr.aareon.openstreetmap.Marker;
 import fr.aareon.openstreetmap.StaticMap;
@@ -27,7 +28,14 @@ public class StaticMapTest extends TestCase {
         map.setUseTileCache(true);
         map.setFileOutputPath(mapFilePath);
         map.setApiKey("9bbf1f2f61c44d468ab96ff5e46b1bbb");
-        map.generate();
+        try {
+            map.generate();
+            assertTrue(true);
+        } catch (AddressNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        }
         
         assertTrue(f.exists());
         assertTrue(f.delete());
@@ -58,7 +66,14 @@ public class StaticMapTest extends TestCase {
         marker.setLabel("Test Marker");
         map.addMarker(marker);
         
-        map.generate();
+        try {
+            map.generate();
+            assertTrue(true);
+        } catch (AddressNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        }
         
         assertTrue(f.exists());
         assertTrue(f.delete());
@@ -85,11 +100,18 @@ public class StaticMapTest extends TestCase {
         
         Marker marker = new Marker();
         marker.setCoord(new Coords((float) 48.7897645, (float)2.2117242));
-        marker.setType("http://lv3im5:7780/syloimages/puce_aareon.png");
+        marker.setType("http://pih-as12c.fr.aareon.local:8888/syloimages-dev/puce_aareon.png");
         marker.setLabel("Aareon France Nouvelle Adresse");
         map.addMarker(marker);
-        
-        map.generate();
+
+        try {
+            map.generate();
+            assertTrue(true);
+        } catch (AddressNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        }
         
         assertTrue(f.exists());
         assertTrue(f.delete());
@@ -108,7 +130,7 @@ public class StaticMapTest extends TestCase {
         map.setZoom(16);
         map.setCoord(new Coords(Float.parseFloat("48.7892521"), Float.parseFloat("2.2118679")));
         map.setAddress("Aareon France Ancienne Adresse");
-        map.setIcon("http://lv3im5:7780/syloimages/puce_aareon.png");
+        map.setIcon("http://pih-as12c.fr.aareon.local:8888/syloimages-dev/puce_aareon.png");
         map.setMaptype(StaticMap.MAP_TYPE_CYCLE);
         map.setUseMapCache(false);
         map.setUseTileCache(true);
@@ -117,11 +139,18 @@ public class StaticMapTest extends TestCase {
         
         Marker marker = new Marker();
         marker.setCoord(new Coords((float) 48.7897645, (float)2.2117242));
-        marker.setType("http://lv3im5:7780/syloimages/puce_aareon.png");
+        marker.setType("http://pih-as12c.fr.aareon.local:8888/syloimages-dev/puce_aareon.png");
         marker.setLabel("Aareon France Nouvelle Adresse");
         map.addMarker(marker);
-        
-        map.generate();
+
+        try {
+            map.generate();
+            assertTrue(true);
+        } catch (AddressNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        }
         
         assertTrue(f.exists());
         assertTrue(f.delete());

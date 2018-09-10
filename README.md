@@ -40,7 +40,7 @@ BufferedImage img = map.generate();
 ## Command Line Arguments
 
 ### StaticMap
-<code>java -cp OpenStreeMap-{version}-jar-dependencies.jar fr.aareon.openstreetmap.StaticMap (-q address | -coord lat,lon) -o outputpath [-cache true/false] [-size 512x512] [-zoom 0-18] [-markers] [-maptype [cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood]] [-cleanCache]
+<code>java -cp OpenStreeMap-{version}-jar-dependencies.jar fr.aareon.openstreetmap.StaticMap -apikey {thunderForestApiKey} (-q address | -coord lat,lon) -o outputpath [-cache true/false] [-size 512x512] [-zoom 0-18] [-markers] [-maptype [cycle (default), transport, landscape, outdoors, transport-dark, spinal-map, pioneer, mobile-atlas, neighbourhood]] [-cleanCache]
 </code>
 
 ### Available arguments

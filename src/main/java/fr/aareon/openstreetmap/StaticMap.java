@@ -82,15 +82,15 @@ public class StaticMap {
 	
 	private static Map<String, String> initTilesUrls() {
 	    Map<String, String> map = new HashMap<String, String>();
-	    map.put(StaticMap.MAP_TYPE_TRANSPORT, "http://{S}.tile.thunderforest.com/transport/{Z}/{X}/{Y}.png?apikey={apikey}");
-	    map.put(StaticMap.MAP_TYPE_CYCLE, "http://{S}.tile.thunderforest.com/cycle/{Z}/{X}/{Y}.png?apikey={apikey}");
-	    map.put(StaticMap.MAP_TYPE_LANDSCAPE, "http://{S}.tile.thunderforest.com/landscape/{Z}/{X}/{Y}.png?apikey={apikey}");
-	    map.put(StaticMap.MAP_TYPE_OUTDOORS, "http://{S}.tile.thunderforest.com/outdoors/{Z}/{X}/{Y}.png?apikey={apikey}");
-	    map.put(StaticMap.MAP_TYPE_TRANSPORTDARK, "http://{S}.tile.thunderforest.com/transport-dark/{Z}/{X}/{Y}.png?apikey={apikey}");
-	    map.put(StaticMap.MAP_TYPE_SPINALMAP, "http://{S}.tile.thunderforest.com/spinal-map/{Z}/{X}/{Y}.png?apikey={apikey}");
-	    map.put(StaticMap.MAP_TYPE_PIONEER, "http://{S}.tile.thunderforest.com/pioneer/{Z}/{X}/{Y}.png?apikey={apikey}");
-	    map.put(StaticMap.MAP_TYPE_MOBILEATLAS, "http://{S}.tile.thunderforest.com/mobile-atlas/{Z}/{X}/{Y}.png?apikey={apikey}");
-	    map.put(StaticMap.MAP_TYPE_NEIGHBOURHOOD, "http://{S}.tile.thunderforest.com/neighbourhood/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_TRANSPORT, "https://{S}.tile.thunderforest.com/transport/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_CYCLE, "https://{S}.tile.thunderforest.com/cycle/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_LANDSCAPE, "https://{S}.tile.thunderforest.com/landscape/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_OUTDOORS, "https://{S}.tile.thunderforest.com/outdoors/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_TRANSPORTDARK, "https://{S}.tile.thunderforest.com/transport-dark/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_SPINALMAP, "https://{S}.tile.thunderforest.com/spinal-map/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_PIONEER, "https://{S}.tile.thunderforest.com/pioneer/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_MOBILEATLAS, "https://{S}.tile.thunderforest.com/mobile-atlas/{Z}/{X}/{Y}.png?apikey={apikey}");
+	    map.put(StaticMap.MAP_TYPE_NEIGHBOURHOOD, "https://{S}.tile.thunderforest.com/neighbourhood/{Z}/{X}/{Y}.png?apikey={apikey}");
 	    return map;
 	}
 	
@@ -437,6 +437,7 @@ public class StaticMap {
 		map.setMaptype(maptype);
 		map.setFileOutputPath(output);
 		map.setUseMapCache(Boolean.parseBoolean(cache));
+        map.setUseTileCache(Boolean.parseBoolean(cache));
 		map.setIcon(icon);
 		map.setApiKey(apiKey);
 		
@@ -464,7 +465,11 @@ public class StaticMap {
 		if (cleanCache) {
 		    map.cleanCache();
 		}
-		map.generate();
+		try {
+            map.generate();
+        } catch (AddressNotFoundException e) {
+            e.printStackTrace();
+        }
 	}
 	
 	public StaticMap() {
@@ -511,9 +516,10 @@ public class StaticMap {
 	/**
 	 * Generates Map with cache configuration
 	 * @return Generated map
+	 * @throws AddressNotFoundException 
 	 */
-	public BufferedImage generate() {
-		initCoords();
+	public BufferedImage generate() throws AddressNotFoundException {
+        initCoords();
 		if (!isUseMapCache()) {
 			generateMap();
 		} else {
@@ -545,7 +551,7 @@ public class StaticMap {
 			Marker marker = new Marker();
 			marker.setCoord(coords);
 			marker.setLabel(address);
-			if (getIcon() != null) {
+			if (getIcon() != null && !getIcon().equals("")) {
 			    marker.setType(getIcon());
 			} else {
 	            marker.setType(Marker.CONST_TYPE_PURPLEPUSHPIN);
@@ -574,20 +580,20 @@ public class StaticMap {
 	
 	/**
 	 * Initializes coordinates. IF none, try to get coordinates from address using Geocoding.
+	 * @throws AddressNotFoundException 
+	 * @throws IOException 
 	 */
-	private void initCoords() {
+	private void initCoords() throws AddressNotFoundException {
 		if (getCoord() == null) {
 			Geocoding geocoding = new Geocoding();
 			geocoding.setAddress(address);
 			
 			Coords[] coords = geocoding.request();
-			if (coords != null) {
-	            setCoord(coords[0]);
-		        centerX = lonToTile(getCoord().getLongitude(), zoom);
-		        centerY = latToTile(getCoord().getLatitude(), zoom);
-		        offsetX = Math.floor((Math.floor(centerX) - centerX) * tileSize);
-		        offsetY = Math.floor((Math.floor(centerY) - centerY) * tileSize);
-			}
+            setCoord(coords[0]);
+	        centerX = lonToTile(getCoord().getLongitude(), zoom);
+	        centerY = latToTile(getCoord().getLatitude(), zoom);
+	        offsetX = Math.floor((Math.floor(centerX) - centerX) * tileSize);
+	        offsetY = Math.floor((Math.floor(centerY) - centerY) * tileSize);
 		} else {
 		    // calc position from coords
             centerX = lonToTile(getCoord().getLongitude(), zoom);
@@ -623,6 +629,7 @@ public class StaticMap {
 				return ImageIO.read(f);
 			} else {
 				URL obj = new URL(url);
+				System.out.println(url.toString());
 		        BufferedImage image = ImageIO.read(obj);
 		        if (useTileCache) {
 		        	writeTileToCache(url, image);
@@ -693,6 +700,8 @@ public class StaticMap {
     	    isResource = false;
     		Marker marker = it.next();
     		String type = marker.getType();
+    		System.out.println("Adding marker " + marker.getLabel());
+            System.out.println("Adding type " + type);
     		
     		Iterator<Map<String, String>> imp = markerPrototypes.iterator();
     		while(imp.hasNext()) {
@@ -717,7 +726,8 @@ public class StaticMap {
     		//check if resource image exists
     		InputStream is;
     		if (isResource) {
-    		    is = StaticMap.class.getResourceAsStream("resources/images/markers/"+type+extension);
+    		    System.out.println("/osm/images/markers/"+type+extension);
+    		    is = StaticMap.class.getResourceAsStream("/osm/images/markers/"+type+extension);
     		} else {
     		    try {
                     is = new URL(type).openStream();
@@ -745,7 +755,7 @@ public class StaticMap {
 	            gdr.drawString(marker.getLabel(), (int)destX + 20, (int)destY - 10);
 	    		
 	    		if (!shadow.equals("false")) {
-	    			is = StaticMap.class.getResourceAsStream("resources/images/"+shadow);
+	    			is = StaticMap.class.getResourceAsStream("/osm/images/"+shadow);
 	    			try {
 	    	            BufferedImage imgshadow = ImageIO.read(is);
 		    			gdr.drawImage(imgshadow, (int)destX + Integer.parseInt(offsetMarkerShadow[0]), (int)destY + Integer.parseInt(offsetMarkerShadow[1]), null);
@@ -817,9 +827,8 @@ public class StaticMap {
         }
     }
 
-
     private String tileUrlToFilename(String url) {
-        url = url.replace("http://", "");
+        url = url.replace("https://", "");
         int s;
         if ((s = url.indexOf("?")) > -1) {
             url = url.substring(0, s);
